@@ -6,15 +6,15 @@ from keras.models import load_model
 import numpy as np
 import random
 import csv
-datas = []
-labels = []
+shuju = []
+biaoqian = []
 
 with open ('test.csv') as f:
 	reader = csv.reader(f)
 	for row in reader:
-		datas.append(row[1])
-del datas[0]
-# Convert letters to integers
+		shuju.append(row[1])
+del shuju[0]
+
 data=np.zeros((400,14))
 def switch(letter=''):
 	if letter=='A':
@@ -26,20 +26,19 @@ def switch(letter=''):
 	else :
 		return int(13)
 
-#print (datas[0][0])
 for i in range(400):
 	for j in range(14):
-		data[i][j]=switch(datas[i][j])
+		data[i][j]=switch(shuju[i][j])
 model = load_model("./model.h5")
 output = model.predict(data,batch_size=100,verbose=0,steps=None)
-result = np.zeros((400,2), dtype = int)
+results = np.zeros((400,2), dtype = int)
 for i in range(400):
-	result[i][0] = i
-	result[i][1] = int(np.argmax(output[i]))
+	results[i][0] = i
+	results[i][1] = int(np.argmax(output[i]))
 
 writer=csv.writer(open('result.csv','w'))
 title = ['id', 'prediction']
 writer.writerow(title)
-for row in result:
+for row in results:
 	writer.writerow(row)
 	
